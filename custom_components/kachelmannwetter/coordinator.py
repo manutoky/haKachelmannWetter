@@ -14,7 +14,7 @@ from homeassistant.helpers.event import async_call_later
 from .exceptions import RateLimitError, InvalidAuth
 
 from .client import KachelmannClient
-from .helpers import normalize_current
+from .helpers import normalize_current, normalize_forecasts
 from .const import DEFAULT_UPDATE_INTERVAL
 
 _LOGGER: Logger = getLogger(__package__)
@@ -50,8 +50,9 @@ class KachelmannDataUpdateCoordinator(DataUpdateCoordinator):
             current = await self.client.async_get_current(self.latitude, self.longitude)
             forecast = await self.client.async_get_forecast(self.latitude, self.longitude)
             # normalize current condition fields for consistent entity mapping
-            normalized = normalize_current(current or {})
-            return {"current": normalized, "forecast": forecast}
+            normalized_current = normalize_current(current or {})
+            normalized_forecasts = normalize_forecasts(forecast or {})
+            return {"current": normalized_current, "forecast": normalized_forecasts}
         except RateLimitError as err:
             retry = getattr(err, "retry_after", None)
             _LOGGER.warning("Rate limited by Kachelmann API, retry after %s seconds", retry)

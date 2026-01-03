@@ -52,5 +52,6 @@ class KachelmannClient:
         return await self._get(url)
 
     async def async_get_forecast(self, latitude: float, longitude: float) -> dict[str, Any]:
-        url = f"https://api.kachelmannwetter.com/v02/forecast/{latitude}/{longitude}/trend14days"
+        #url = f"https://api.kachelmannwetter.com/v02/forecast/{latitude}/{longitude}/trend14days"
+        url = f"https://api.kachelmannwetter.com/v02/forecast/{latitude}/{longitude}/advanced/6h"
         return await self._get(url)

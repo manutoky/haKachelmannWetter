@@ -92,19 +92,4 @@ class KachelmannWeather(CoordinatorEntity, WeatherEntity):
         # This is using the 14day trend forecast endpoint
         forecasts: list[dict[str, Any]] = []
         data = (self.coordinator.data or {}).get("forecast") or {}
-        if isinstance(data, dict):
-            for item in data.get("data", []):
-                # Build forecast dict
-                forecast = {
-                    "datetime": item.get("dateTime"),
-                    "native_temperature": item.get("tempMax"),
-                    "native_templow": item.get("tempMin"),
-                    "native_precipitation": item.get("prec"),
-                    "condition": WEATHER_SYMBOL_DICT.get(item.get("weatherSymbol")),
-                    "cloudCoverage": item.get("cloudCoverageEighths")*12.5 if item.get("cloudCoverageEighths") is not None else None,
-                    "native_wind_speed": item.get("windGust"),
-                    "native_wind_gust_speed": item.get("windGustHigh"),
-                }
-                forecasts.append(forecast)
-        return forecasts  # Forecast not yet implemented
-
+        return data.get("daily")
